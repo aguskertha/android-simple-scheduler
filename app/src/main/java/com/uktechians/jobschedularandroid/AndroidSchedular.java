@@ -7,10 +7,15 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.uktechians.jobschedularandroid.API.APIMessage;
+import com.uktechians.jobschedularandroid.Listener.CreateSensorRecordListener;
+import com.uktechians.jobschedularandroid.Models.SensorRequest;
+import com.uktechians.jobschedularandroid.Repository.SensorRepository;
+
 import java.util.Random;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-public class AndroidSchedular extends JobService {
+public class AndroidSchedular extends JobService implements CreateSensorRecordListener {
     @Override
     public boolean onStartJob(JobParameters params) {
         startJob(params);
@@ -24,7 +29,17 @@ public class AndroidSchedular extends JobService {
     }
 
     private void startJob(JobParameters params) {
-        Log.d("JOB Schedular","Random Int"+ new Random().nextInt());
+        Random random = new Random();
+        int oxi =  random.nextInt(200 - 0) + 0;
+        int heart =  random.nextInt(200 - 0) + 0;
+
+        SensorRequest sensorRequest = new SensorRequest(oxi, heart);
+        SensorRepository.createSensorRecord(sensorRequest, this::onCreateSensorRecord);
+
     }
 
+    @Override
+    public void onCreateSensorRecord(APIMessage message) {
+        Log.d("JobScheduler", message.getMessage());
+    }
 }

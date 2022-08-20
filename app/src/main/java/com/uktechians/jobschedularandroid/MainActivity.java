@@ -34,34 +34,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v.getId()==R.id.btn_start){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                JobScheduler jobScheduler = getSystemService(JobScheduler.class);
-                ComponentName componentName = new ComponentName(this, AndroidSchedular.class);
-                JobInfo.Builder info = new JobInfo.Builder(123, componentName);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    info.setRequiresBatteryNotLow(true);
-                }
-                info.setRequiredNetworkType(JobInfo.NETWORK_TYPE_NONE);
-                info.setPeriodic(15*60*1000);
-                if (jobScheduler!=null){
-                    int result = jobScheduler.schedule(info.build());
-                    if (result==JobScheduler.RESULT_SUCCESS){
-                        Toast.makeText(this, "JOB STARTED", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(this, "FAILED TO START JOB", Toast.LENGTH_SHORT).show();
-
-                    }
-                }
-            }
+            SchedulerService.startScheduler(v.getContext());
         }
         else if (v.getId()==R.id.btn_stop){
-            JobScheduler jobScheduler = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                jobScheduler = getSystemService(JobScheduler.class);
-                jobScheduler.cancel(123);
-            }
-
+            SchedulerService.stopScheduler(v.getContext());
         }
     }
 }
